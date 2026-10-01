@@ -1,0 +1,31 @@
+{
+  "name": "tenfold-typing-trainer",
+  "version": "1.5.0",
+  "description": "Standalone touch-typing trainer with local, per-user save files",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.tenfold.typingtrainer",
+    "productName": "Tenfold",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [],
+    "win": { "target": "nsis" },
+    "mac": { "target": "dmg" },
+    "linux": { "target": "AppImage" }
+  }
+}

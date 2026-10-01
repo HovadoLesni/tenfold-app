@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tenfold — Touch Typing Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-brand">TEN<span>FOLD</span></div>
+    <div class="login-sub" id="loginSub">Who's typing today?</div>
+    <div class="login-user-list" id="loginUserList"></div>
+    <div class="login-new-row">
+      <input type="text" id="loginNameInput" placeholder="Enter your name" maxlength="24" autocomplete="off">
+      <button class="btn-primary" id="loginCreateBtn">Continue</button>
+    </div>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="brand">TEN<span>FOLD</span></div>
+      <div class="tagline">touch typing, on your terms</div>
+    </div>
+    <div class="user-badge">
+      <span class="user-name">Typing as <b id="currentUserLabel">—</b></span>
+      <button class="switch-user-btn" id="switchUserBtn">Switch user</button>
+    </div>
+  </header>
+
+  <div class="weekly-panel">
+    <div class="weekly-head">
+      <span class="weekly-title">Weekly practice time</span>
+      <span class="weekly-total" id="weeklyTotal">0m this week</span>
+    </div>
+    <div class="weekly-bars" id="weeklyBars"></div>
+    <div class="recent-goals-head">
+      <span class="weekly-title">Recent sessions vs. goal</span>
+    </div>
+    <div class="recent-goals" id="recentGoals"></div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-row">
+      <span class="settings-label">Session</span>
+      <div class="seg" id="modeSeg">
+        <button data-mode="time" class="active">By time</button>
+        <button data-mode="chars">By characters</button>
+      </div>
+      <div class="custom-value" id="timeCustom">
+        <input type="number" id="timeInput" min="0.5" max="60" step="0.5" value="3">
+        <span>min</span>
+      </div>
+      <div class="custom-value" id="charsCustom" style="display:none;">
+        <input type="number" id="charsInput" min="20" max="5000" step="10" value="500">
+        <span>characters</span>
+      </div>
+    </div>
+    <div class="settings-row" id="presetRow">
+      <span class="settings-label">Presets</span>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">On mistake</span>
+      <div class="seg" id="errorSeg">
+        <button data-err="continue">Keep typing</button>
+        <button data-err="block" class="active">Must retype key</button>
+        <button data-err="backspace">Must backspace</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Lesson group</span>
+      <div class="cat-tabs" id="groupTabs"></div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Lesson</span>
+      <div class="cat-tabs" id="lessonTabs"></div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label"></span>
+      <span class="lesson-desc" id="lessonDesc"></span>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label"></span>
+      <button class="btn suggest-btn" id="suggestBtn">🎯 Suggest a lesson to improve</button>
+    </div>
+    <div class="custom-text-panel" id="customTextPanel" style="display:none;">
+      <div class="custom-text-hint" id="customTextHint"></div>
+      <textarea id="customTextArea" class="custom-textarea" maxlength="10000" placeholder="Paste your text here (up to 10,000 characters)…"></textarea>
+      <div class="custom-text-row">
+        <span class="custom-text-count" id="customTextCount">0 / 10,000</span>
+        <div class="custom-text-actions">
+          <button class="btn" id="importFileBtn">Import from file…</button>
+          <button class="btn-primary" id="saveCustomTextBtn">Save text</button>
+        </div>
+      </div>
+    </div>
+    <div class="settings-row toggle-row">
+      <span class="settings-label">Keyboard</span>
+      <div class="toggle on" id="kbdToggle"></div>
+      <span class="toggle-label" id="kbdToggleLabel">Show help keyboard</span>
+    </div>
+    <div class="settings-row toggle-row">
+      <span class="settings-label">Shake</span>
+      <div class="toggle on" id="shakeToggle"></div>
+      <span class="toggle-label" id="shakeToggleLabel">Shake screen on error</span>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Show</span>
+      <div class="seg" id="displaySeg">
+        <button data-display="accuracy" class="active">Accuracy</button>
+        <button data-display="errorRate">Error rate</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Count errors</span>
+      <div class="seg" id="errorCountSeg">
+        <button data-count="perKey" class="active">Every bad key</button>
+        <button data-count="perLetter">1 per letter</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Goals</span>
+      <div class="custom-value">
+        <select id="goalWpmInput" class="goal-select"></select>
+        <span>WPM goal</span>
+      </div>
+      <div class="custom-value">
+        <select id="goalErrInput" class="goal-select"></select>
+        <span>max % errors</span>
+      </div>
+    </div>
+    <div class="start-row">
+      <button class="btn" id="restartTopBtn">Restart</button>
+      <button class="btn-primary" id="startBtn">Start session</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat wpm"><div class="label">WPM</div><div class="value" id="statWpm">0</div></div>
+    <div class="stat acc"><div class="label" id="statAccLabel">Accuracy</div><div class="value" id="statAcc">100%</div></div>
+    <div class="stat err"><div class="label">Errors</div><div class="value" id="statErr">0</div></div>
+    <div class="stat time"><div class="label" id="statFourthLabel">Time left</div><div class="value" id="statFourth">3:00</div></div>
+  </div>
+
+  <div class="summary-panel" id="summaryPanel">
+    <div class="summary-head">
+      <h3>Session complete</h3>
+      <button class="btn" id="newSessionBtn">New session →</button>
+    </div>
+    <div class="summary-stats" id="summaryStats"></div>
+    <div class="goal-badge" id="goalBadge"></div>
+    <div class="chart-card">
+      <div class="chart-legend">
+        <span class="legend-item"><i class="legend-dot speed"></i>Speed (WPM)</span>
+        <span class="legend-item"><i class="legend-dot error"></i>Errors</span>
+      </div>
+      <div id="sessionChartWrap" class="chart-wrap"></div>
+    </div>
+  </div>
+
+  <div class="pause-banner" id="pauseBanner">
+    <span>Paused</span>
+    <button class="btn" id="resumeBtn">Resume (Esc)</button>
+  </div>
+
+  <div class="panel" id="typingPanel">
+    <div class="lesson-title" id="lessonTitleLabel"></div>
+    <div class="prompt" id="prompt"></div>
+    <input type="text" class="typebox" id="typebox" placeholder="Click here and start typing…" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="error-hint" id="errorHint"></div>
+    <div class="row-actions">
+      <button class="btn" id="restartBtn">Restart session</button>
+    </div>
+  </div>
+
+  <div class="keyboard show" id="keyboard"></div>
+
+  <footer>Set a time or character goal above, pick your content, then start typing.</footer>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>
